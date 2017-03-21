@@ -23,6 +23,8 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        score = 0,
+        collision = -1,
         lastTime;
 
     canvas.width = 505;
@@ -151,6 +153,10 @@ var Engine = (function(global) {
             enemy.render();
         });
 
+        allLives.forEach(function(live) {
+            live.render();
+        });
+
         player.render();
     }
 
@@ -171,7 +177,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/Heart.png'
     ]);
     Resources.onReady(init);
 
