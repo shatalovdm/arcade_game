@@ -1,8 +1,4 @@
 
-// Count number of collisions and score
-var collision = -1;
-var score = 0;
-
 // Enemies our player must avoid
 var Enemy = function(x, y, speed) {
 
@@ -29,11 +25,15 @@ Enemy.prototype.update = function(dt) {
         if (player.x < (this.x + 40) && player.x > (this.x - 40)) {
             collision += 1;
             allLives[collision].visible = false;
+            player.reset();
             if (collision === 2) {
-                console.log('Game over');
                 collision = -1;
-            }
-           player.reset();    
+                score = 0;
+                document.getElementById('score').innerHTML = score;
+                allLives.forEach(function(live) {
+                    live.reset();
+                });
+            }    
         }
     }
 
@@ -110,6 +110,10 @@ Live.prototype.render = function() {
     if (this.visible) {
         ctx.drawImage(Resources.get(this.sprite), (350 + this.number * 50), 50, 50, 70);
     }
+}
+
+Live.prototype.reset = function() {
+    this.visible = true;
 }
 
 // Instantiate objects for the game
