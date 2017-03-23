@@ -23,13 +23,12 @@ Enemy.prototype.update = function(dt) {
     // Handle collision with the Player
     if ((player.y - 20) === this.y) {
         if (player.x < (this.x + 40) && player.x > (this.x - 40)) {
-            collision += 1;
-            allLives[collision].visible = false;
             player.reset();
-            if (collision === 2) {
-                collision = -1;
-                score = 0;
-                document.getElementById('score').innerHTML = score;
+            player.collision = player.collision + 1;
+            allLives[player.collision].visible = false;
+            if (player.collision === 2) {
+                player.collision = -1;
+                sc.reset();
                 allLives.forEach(function(live) {
                     live.reset();
                 });
@@ -37,9 +36,13 @@ Enemy.prototype.update = function(dt) {
         }
     }
 
-    // Move the enemies to the beginning of a line when they reach the border
+    // Move the enemies to the beginning of the next line when they reach the border
     if (this.x > 500) {
         this.x = -100;
+        this.y = this.y + 80;
+        if (this.y === 300) {
+            this.y = 60;
+        }
     }
 };
 
@@ -52,6 +55,7 @@ var Player = function(x, y) {
     this.x = x;
     this.y = y;
     this.reset();
+    this.collision = -1;
     this.sprite = 'images/char-boy.png';
 };
 
@@ -64,8 +68,9 @@ Player.prototype.update = function(dt) {
 
     // Handle the case when the player reaches the river
     if (this.yMove === 0) {
-        score += 1;
-        document.getElementById('score').innerHTML = score;
+        // Update the score
+        sc.update();
+        // Reset the position of the player
         this.reset();
     }
 };
@@ -105,28 +110,53 @@ var Live = function(number) {
     this.number = number;
 }
 
-// Draw the live on the screen, required method for game
+// Draw hearts on the screen, required method for game
 Live.prototype.render = function() {
     if (this.visible) {
         ctx.drawImage(Resources.get(this.sprite), (350 + this.number * 50), 50, 50, 70);
     }
 }
 
+// Reset live visibility on the screen
 Live.prototype.reset = function() {
     this.visible = true;
+}
+
+// Score the player gets when reaches the river
+var Score = function() {
+    this.score = 0;
+}
+
+// Draw score on the screen, required method for game
+Score.prototype.render = function() {
+    ctx.font = '22pt Calibri';
+    ctx.fillStyle = 'white';
+    ctx.fillText('YOUR SCORE: '+ this.score, 10, 95);
+}
+
+// Update the score 
+Score.prototype.update = function() {
+    this.score = this.score + 1;
+}
+
+// Reset the score 
+Score.prototype.reset = function() {
+    this.score = 0;
 }
 
 // Instantiate objects for the game
 var allEnemies = [
     new Enemy(-100, 60, Math.random() * (10 - 2) + 2),  
     new Enemy(-100, 140, Math.random() * (10 - 2) + 2),  
-    new Enemy(-100, 220, Math.random() * (10 - 2) + 2)  
+    new Enemy(-100, 220, Math.random() * (10 - 2) + 2)
 ];
 var player = new Player(200, 400);
 
 var allLives = [
     new Live(0), new Live(1), new Live(2)
 ];
+
+var sc = new Score();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method.
