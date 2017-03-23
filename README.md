@@ -2,6 +2,7 @@
 
 This game is a project created as a part of Udacity Front-end Nanodegree program. The main purpose of this project is to practice JavaScript’s object oriented programming features.
 
+The demo is available [here](http://dshatalov.com/arcade_game/).
 
 ## Getting Started
 
